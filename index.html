@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Self-Improvement App</title>
+    <style>
+        body {
+            font-family: 'Helvetica', sans-serif;
+            background-color: #f0f2f5;
+            color: #172a4e;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        label {
+            margin-top: 10px;
+            margin-bottom: 5px;
+            color: #172a4e;
+        }
+
+        input, button, textarea, select {
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #dfe1e6;
+            border-radius: 5px;
+            background-color: #fff;
+            color: #172a4e;
+        }
+
+        button {
+            cursor: pointer;
+            background-color: #000;
+            color: #fff;
+            border: none;
+        }
+
+        button:hover {
+            background-color: #333;
+        }
+
+        #clock {
+            font-size: 24px;
+            color: #172a4e;
+        }
+
+        #stoicQuote {
+            margin-top: 20px;
+            font-style: italic;
+            font-size: 18px;
+        }
+
+        #currentGoals, #taskList, #journal {
+            width: 100%;
+        }
+
+        #feedback {
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <!-- Stoic Quote Section -->
+    <div id="stoicQuote"></div>
+
+    <!-- Date and Clock Section -->
+    <div>
+        <label for="date">Select a date:</label>
+        <input type="date" id="date">
+    </div>
+
+    <div id="clock">00:00:00 AM</div>
+
+    <!-- Goal Tracker Section -->
+    <div>
+        <label for="goal">Goal Tracker:</label>
+        <input type="text" id="goal">
+        <button onclick="addGoal()">Add Goal</button>
+        <button onclick="removeGoal()">Remove Goal</button>
+
+        <label for="currentGoals">Current Goals:</label>
+        <select id="currentGoals" size="5"></select>
+    </div>
+
+    <!-- Task List Section -->
+    <div>
+        <label for="task">Task List:</label>
+        <input type="text" id="task">
+        <button onclick="addTask()">Add Task</button>
+        <button onclick="removeTask()">Remove Task</button>
+
+        <label for="taskList">Task List:</label>
+        <select id="taskList" size="5"></select>
+    </div>
+
+    <!-- Journal Section -->
+    <div>
+        <label for="journal">Journal:</label>
+        <textarea id="journal" rows="5"></textarea>
+        
+    </div>
+
+    <!-- Actions Section -->
+
+
+    <!-- Feedback Section -->
+    <div id="feedback"></div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { hour12: true });
+            document.getElementById('clock').innerText = timeString;
+            setTimeout(updateClock, 1000);
+        }
+
+        function getRandomStoicQuote() {
+            const stoicQuotes = [
+                "It is not that we have a short time to live, but that we waste much of it. - Seneca",
+                "The best revenge is to be unlike him who performed the injustice. - Marcus Aurelius",
+                "He who fears death will never do anything worthy of a man who is alive. - Seneca",
+                "We suffer more often in imagination than in reality. - Seneca",
+                "The more we value things outside our control, the less control we have. - Epictetus",
+                "It is not the man who has too little, but the man who craves more, that is poor. - Seneca",
+                "No person has the power to have everything they want, but it is in their power not to want what they don't have, and to cheerfully put to good use what they do have. - Seneca",
+                "We cannot choose our external circumstances, but we can always choose how we respond to them. - Epictetus",
+                "It is not that we are given a short life, but we make it short, and we are not ill-supplied but wasteful of it. - Seneca",
+                "The best revenge is to be unlike him who performed the injustice. - Marcus Aurelius",
+                "When you arise in the morning think of what a privilege it is to be alive, to think, to enjoy, to love. - Marcus Aurelius",
+                "Difficulties strengthen the mind, as labor does the body. - Seneca",
+                "Waste no more time arguing about what a good man should be. Be one. - Marcus Aurelius",
+                "It is not that I’m so smart, it’s just that I stay with problems longer. - Albert Einstein",
+                "The only wealth which you will keep forever is the wealth you have given away. - Marcus Aurelius",
+                "If it is not right, do not do it. If it is not true, do not say it. - Marcus Aurelius",
+                "We suffer more in imagination than in reality. - Seneca",
+                "It is not that we have a short time to live, but that we waste much of it. - Seneca",
+                "What need is there to weep over parts of life? The whole of it calls for tears. - Seneca",
+                "It is not that we have a short time to live, but that we waste much of it. - Seneca",
+                "The best revenge is to be unlike him who performed the injustice. - Marcus Aurelius",
+                "He who is brave is free. - Seneca",
+                "The best revenge is to be unlike him who performed the injustice. - Marcus Aurelius",
+                "Difficulties strengthen the mind, as labor does the body. - Seneca",
+                "Waste no more time arguing about what a good man should be. Be one. - Marcus Aurelius",
+                "It is not that I’m so smart, it’s just that I stay with problems longer. - Albert Einstein",
+                "When you arise in the morning think of what a privilege it is to be alive, to think, to enjoy, to love. - Marcus Aurelius",
+                "He who is brave is free. - Seneca",
+                "The only wealth which you will keep forever is the wealth you have given away. - Marcus Aurelius",
+                "If it is not right, do not do it. If it is not true, do not say it. - Marcus Aurelius",
+                ""
+            ];
+
+            const randomIndex = Math.floor(Math.random() * stoicQuotes.length);
+            return stoicQuotes[randomIndex];
+        }
+
+        function displayRandomStoicQuote() {
+            const stoicQuoteDiv = document.getElementById('stoicQuote');
+            stoicQuoteDiv.innerText = getRandomStoicQuote();
+        }
+
+        function addGoal() {
+            const goalInput = document.getElementById('goal');
+            const currentGoalsSelect = document.getElementById('currentGoals');
+            const goal = goalInput.value;
+
+            if (goal) {
+                const option = document.createElement('option');
+                option.text = goal;
+                currentGoalsSelect.add(option);
+                showFeedback('Goal added successfully!', 'success');
+            } else {
+                showFeedback('Please enter a goal.', 'error');
+            }
+        }
+
+        function removeGoal() {
+            const currentGoalsSelect = document.getElementById('currentGoals');
+            const selectedOption = currentGoalsSelect.options[currentGoalsSelect.selectedIndex];
+
+            if (selectedOption) {
+                currentGoalsSelect.remove(currentGoalsSelect.selectedIndex);
+                showFeedback('Goal removed successfully!', 'success');
+            } else {
+                showFeedback('Please select a goal to remove.', 'error');
+            }
+        }
+
+        function addTask() {
+            const taskInput = document.getElementById('task');
+            const taskListSelect = document.getElementById('taskList');
+            const task = taskInput.value;
+
+            if (task) {
+                const option = document.createElement('option');
+                option.text = task;
+                taskListSelect.add(option);
+                showFeedback('Task added successfully!', 'success');
+            } else {
+                showFeedback('Please enter a task.', 'error');
+            }
+        }
+
+        function removeTask() {
+            const taskListSelect = document.getElementById('taskList');
+            const selectedOption = taskListSelect.options[taskListSelect.selectedIndex];
+
+            if (selectedOption) {
+                taskListSelect.remove(taskListSelect.selectedIndex);
+                showFeedback('Task removed successfully!', 'success');
+            } else {
+                showFeedback('Please select a task to remove.', 'error');
+            }
+        }
+
+      
+
+
+        function showFeedback(message, type) {
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.textContent = message;
+
+            switch (type) {
+                case 'success':
+                    feedbackDiv.style.color = '#28a745';
+                    break;
+                case 'error':
+                    feedbackDiv.style.color = '#dc3545';
+                    break;
+                case 'info':
+                    feedbackDiv.style.color = '#007bff';
+                    break;
+                default:
+                    feedbackDiv.style.color = '#172a4e';
+            }
+
+            setTimeout(() => {
+                feedbackDiv.textContent = '';
+            }, 3000);
+        }
+
+        updateClock();
+        displayRandomStoicQuote();
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Self-Improvement App</title>
+    <style>
+        body {
+            font-family: 'Helvetica', sans-serif;
+            background-color: #f0f2f5;
+            color: #172a4e;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        #financeSection {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 50%; /* Adjust the width as needed */
+            max-width: 600px; /* Set a maximum width if desired */
+            margin-top: 20px;
+        }
+
+        label, input, button, ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        label {
+            margin-bottom: 5px;
+        }
+
+        input, button {
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #dfe1e6;
+            border-radius: 5px;
+            background-color: #fff;
+            color: #172a4e;
+        }
+
+        button {
+            cursor: pointer;
+            background-color: #000;
+            color: #fff;
+            border: none;
+        }
+
+        button:hover {
+            background-color: #333;
+        }
+
+        #balance {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .positive {
+            color: #28a745;
+        }
+
+        .negative {
+            color: #dc3545;
+        }
+
+        #transactionList {
+            margin-top: 10px;
+        }
+
+        #transactionList li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Finance Tracker Section -->
+    <div id="financeSection">
+        <label for="income">Income:</label>
+        <input type="number" id="income" placeholder="Enter income">
+
+        <label for="expenses">Expenses:</label>
+        <input type="number" id="expenses" placeholder="Enter expenses">
+
+        <button onclick="addTransaction()">Add Transaction</button>
+
+        <div id="balance" class="positive">Balance: $0.00</div>
+    </div>
+
+    <ul id="transactionList"></ul>
+
+    <script>
+        let transactions = [];
+
+        function updateBalance() {
+            const incomeInput = document.getElementById('income');
+            const expensesInput = document.getElementById('expenses');
+            const balanceDiv = document.getElementById('balance');
+
+            const income = parseFloat(incomeInput.value) || 0;
+            const expenses = parseFloat(expensesInput.value) || 0;
+            const balance = income - expenses;
+
+            balanceDiv.innerText = `Balance: $${balance.toFixed(2)}`;
+
+            // Update the color based on the balance value
+            if (balance >= 0) {
+                balanceDiv.className = 'positive';
+            } else {
+                balanceDiv.className = 'negative';
+            }
+        }
+
+        function addTransaction() {
+            const incomeInput = document.getElementById('income');
+            const expensesInput = document.getElementById('expenses');
+
+            const income = parseFloat(incomeInput.value) || 0;
+            const expenses = parseFloat(expensesInput.value) || 0;
+            const balance = income - expenses;
+
+            const transaction = {
+                income: income.toFixed(2),
+                expenses: expenses.toFixed(2),
+                balance: balance.toFixed(2),
+                timestamp: new Date().toLocaleString(),
+            };
+
+            transactions.push(transaction);
+
+            displayTransactions();
+            updateBalance();
+        }
+
+        function displayTransactions() {
+            const transactionList = document.getElementById('transactionList');
+            transactionList.innerHTML = '';
+
+            transactions.forEach(transaction => {
+                const li = document.createElement('li');
+                li.innerText = `${transaction.timestamp} - Income: $${transaction.income}, Expenses: $${transaction.expenses}, Balance: $${transaction.balance}`;
+                transactionList.appendChild(li);
+            });
+        }
+
+        // Initial display
+        updateBalance();
+
+        // Display existing transactions if any
+        displayTransactions();
+    </script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meditation Timer</title>
+    <style>
+        body {
+            font-family: 'Helvetica', sans-serif;
+            background-color: #f0f2f5;
+            color: #172a4e;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: right;
+            justify-content: right;
+            min-height: 100vh;
+        }
+
+        #meditationTimer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #timerCircle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 5px solid #3498db;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        #timerText {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        button {
+            cursor: pointer;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            background-color: #3498db;
+            color: #f1f1f1;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #410606;
+        }
+    </style>
+</head>
+<body>
+    <!-- Meditation Timer Section -->
+    <div id="meditationTimer">
+        <div id="timerCircle">
+            <div id="timerText">00:00</div>
+        </div>
+        <button id="startButton" onclick="startMeditation()">Start Meditation</button>
+    </div>
+
+    <script>
+        let timerInterval;
+        let totalTime = 300; // 5 minutes in seconds
+        let remainingTime = totalTime;
+
+        function startMeditation() {
+            document.getElementById('startButton').disabled = true;
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            remainingTime--;
+
+            const timerText = document.getElementById('timerText');
+            const timerCircle = document.getElementById('timerCircle');
+            const percentage = (remainingTime / totalTime) * 100;
+
+            timerText.innerText = formatTime(remainingTime);
+            timerCircle.style.background = `conic-gradient(#3498db ${percentage}%, transparent ${percentage}%)`;
+
+            if (remainingTime <= 0) {
+                clearInterval(timerInterval);
+                document.getElementById('startButton').disabled = false;
+                timerText.innerText = '00:00';
+            }
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+
+            const formattedMinutes = String(minutes).padStart(2, '0');
+            const formattedSeconds = String(remainingSeconds).padStart(2, '0');
+
+            return `${formattedMinutes}:${formattedSeconds}`;
+        }
+    </script>
+</body>
+</html>
+
+
+
+
